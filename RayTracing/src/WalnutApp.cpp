@@ -4,13 +4,15 @@
 
 #include "Walnut/Image.h"
 #include "Walnut/Random.h"
+#include "Walnut/Timer.h"
 
 class ExampleLayer : public Walnut::Layer
 {
 public:
 	virtual void OnUIRender() override
 	{
-		ImGui::Begin("Hello");
+		ImGui::Begin("Settings");
+		ImGui::Text("Render Time: %.3f", m_LastRenderTime);
 		if (ImGui::Button("Render"))
 		{
 			Render();
@@ -36,7 +38,8 @@ public:
 
 	void Render()
 	{
-		std::cout << "rendered with W: " << m_viewportWidth << " and H: " << m_viewportHeight << "\n";
+		Walnut::Timer timer;
+
 		if (!m_Image || m_Image->GetHeight() != m_viewportHeight || m_Image->GetWidth() != m_viewportWidth)
 		{
 			m_Image = std::make_shared<Walnut::Image>(m_viewportWidth, m_viewportHeight, Walnut::ImageFormat::RGBA);
@@ -51,12 +54,14 @@ public:
 		}
 
 		m_Image->SetData(m_pImageData);
+		m_LastRenderTime = timer.ElapsedMillis();
 	}
 
 private:
 	std::shared_ptr<Walnut::Image> m_Image;
 	uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 	uint32_t* m_pImageData = nullptr;
+	float m_LastRenderTime = 0.0f;
 
 };
 
