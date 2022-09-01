@@ -16,6 +16,7 @@ public:
 		}
 		ImGui::End();
 
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
 		ImGui::Begin("Viewport");
 
 		m_viewportWidth = ImGui::GetContentRegionAvail().x;
@@ -27,6 +28,8 @@ public:
 			ImGui::Image(m_Image->GetDescriptorSet(), { (float)m_Image->GetWidth(), (float)m_Image->GetHeight()});
 		}
 		ImGui::End();
+
+		ImGui::PopStyleVar();
 
 	}
 
