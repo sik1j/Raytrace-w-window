@@ -12,7 +12,7 @@ public:
 	virtual void OnUIRender() override
 	{
 		ImGui::Begin("Settings");
-		ImGui::Text("Render Time: %.3f", m_LastRenderTime);
+		ImGui::Text("Render Time: %.3fms", m_LastRenderTime);
 		if (ImGui::Button("Render"))
 		{
 			Render();
