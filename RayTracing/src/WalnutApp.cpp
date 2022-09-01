@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Walnut/Image.h"
+#include "Walnut/Random.h"
 
 class ExampleLayer : public Walnut::Layer
 {
@@ -45,17 +46,8 @@ public:
 
 		for (uint32_t i = 0; i < m_viewportHeight * m_viewportWidth; i++)
 		{
-			if(i < (m_viewportHeight * m_viewportWidth) / 4 )
-			{ 
-				m_pImageData[i] = 0xffff00ff;
-			}
-			else if (i < (2*(m_viewportHeight * m_viewportWidth)/4))
-			{
-			}
-			else
-			{ 
-				m_pImageData[i] = 0xffff0000;
-			}
+			m_pImageData[i] = Walnut::Random::UInt();
+			m_pImageData[i] |= 0xff000000;
 		}
 
 		m_Image->SetData(m_pImageData);
