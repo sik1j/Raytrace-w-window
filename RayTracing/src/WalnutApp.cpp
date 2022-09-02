@@ -30,7 +30,7 @@ public:
 		if (image)
 		{
 			// ImGui::Image(m_Image->GetDescriptorSet(), { (float)m_viewportWidth, (float)m_viewportHeight });
-			ImGui::Image(image->GetDescriptorSet(), {(float)image->GetWidth(), (float)image->GetHeight()});
+			ImGui::Image(image->GetDescriptorSet(), { (float)image->GetWidth(), (float)image->GetHeight() }, {0.0f, 1.0f}, {1.0f, 0.0f});
 		}
 		ImGui::End();
 
