@@ -34,6 +34,6 @@ void Renderer::Render()
 
 uint32_t Renderer::PerPixel(glm::vec2 coords)
 {
-	return 0xffff00ff;
+	return 0xff000000 + (uint32_t)(0xff * coords.y) * 0x100 + (uint32_t)(0xff * coords.x);
 }
 
