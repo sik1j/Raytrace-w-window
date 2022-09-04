@@ -58,21 +58,30 @@ uint32_t Renderer::PerPixel(glm::vec2 coords)
 	The solutions for t give the scaling of t required to hit the sphere
 
 	dot(u,v) -> dot product of vectors u,v
+	solve using quadratic equation
+	t = (-quad_b+/-sqrt(quad_b^2 - 4*quad_a*quad_c))/2quad_a | quad_ prefix used to differentaite from vectors a,b
 	t = (-(dot(a,b))(+/-)sqrt((dot(a,b))^2-(dot(a,a))*(dot(b,b)-r^2)))/dot(a,a)
 
-	descriminant = dot(a,b)^2-dot(a,a)*(dot(b,b)-r^2)
-	descriminant determines if the ray hits the sphere or not
-	descriminant >= 0 ? hit : no hit
+	discriminant = quad_b^2-4*quad_a*quad_c
+	discriminant = dot(a,b)^2-dot(a,a)*(dot(b,b)-r^2)
+	discriminant determines if the ray hits the sphere or not
+	discriminant >= 0 ? hit : no hit
 	*/
+
+
+	float radius = 0.2f;
+
 
 	glm::vec3 a = {coords.x, coords.y, z};
 	glm::vec3 b = { 0,0,-1.0f};
-	float r = 0.2f;
 
-	float descriminant = glm::dot(a, b) * glm::dot(a, b) - glm::dot(a, a) * (glm::dot(b, b) - r*r);
-	// float scalar = glm::sqrt(descriminant) / dot(a, a)
+	float quad_a = glm::dot(a, a);
+	float quad_b = 2 * glm::dot(a, b);
+	float quad_c = glm::dot(b, b) - radius * radius;
 
-	if (descriminant >= 0)
+	float discriminant = quad_b * quad_b - 4 * quad_a * quad_c;
+
+	if (discriminant >= 0)
 		return 0xff000000 + (uint32_t)(0xff * ((coords.y)/2 + 0.5)) * 0x100 + (uint32_t)(0xff * (coords.x/2 + 0.5));
 		// return 0xffff00ff;
 	return 0xff000000;
