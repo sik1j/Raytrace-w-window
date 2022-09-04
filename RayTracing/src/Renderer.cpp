@@ -1,5 +1,11 @@
 #include "Renderer.h"
+
+#if WL_DEBUG
 #include <iostream>
+#define Log(x) std::cout << x << "\n"
+#else
+#define Log(x)
+#endif
 
 void Renderer::OnResize(uint32_t width, uint32_t height)
 {
@@ -23,10 +29,12 @@ void Renderer::Render()
 {
 	for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++)
 	{
-		for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++)
+		uint32_t x;
+		for (x = 0; x < m_FinalImage->GetWidth(); x++)
 		{
 			m_pImageData[y * m_FinalImage->GetWidth() + x] = PerPixel({ (float)x / m_FinalImage->GetWidth(), (float)y / m_FinalImage->GetHeight() });
 		}
+		Log((float)x / m_FinalImage->GetWidth());
 	}
 
 	m_FinalImage->SetData(m_pImageData);
