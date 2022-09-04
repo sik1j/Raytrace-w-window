@@ -86,10 +86,11 @@ glm::vec4 Renderer::PerPixel(glm::vec2 coords)
 	*/
 
 
-	float radius = 0.2f;
+	float radius = 0.5f;
 
+	// neg z is forward; a computer graphics convention
 	glm::vec3 rayDirection(coords.x, coords.y, -1.0f);
-	glm::vec3 rayOrigin(0.0f, 0.0f, 2.0f);
+	glm::vec3 rayOrigin(0.0f, 0.0f, 1.0f);
 
 	// prefix quad_ represents parts of the quadratic equation: (-b +/- sqrt(b^2 - 4ac))/(2a)
 	float quad_a = glm::dot(rayDirection, rayDirection);
@@ -103,12 +104,21 @@ glm::vec4 Renderer::PerPixel(glm::vec2 coords)
 
 	// (-b +/- sqrt(discriminant))/2a
 	float t0 = (-quad_b + glm::sqrt(discriminant)) / ( 2.0f * quad_a );
-	float closestT = (-quad_b - glm::sqrt(discriminant)) / ( 2.0f * quad_a );
+	// origin of sphere is at (0,0,0) | camera is at (0,0,2) | rays from camera travel in the neg z direction
+	// a more neg z means the point is closer to the camera; The closest hit is the most neagtive z value;
+	float closestT = (-quad_b - glm::sqrt(discriminant)) / ( 2.0f * quad_a ); 
 
 	glm::vec3 hitPoint = rayDirection * closestT + rayOrigin;
+	glm::vec3 normal = glm::normalize(hitPoint);
+
+	glm::vec3 lightDirection = glm::normalize(glm::vec3(-1, -1, -1));
+
+	// given two uint vectors: u,v and theta: the angle between them | cos(theta) == dot(u,v);
+	float lightIntensity = glm::max(glm::dot(normal, -lightDirection), 0.0f); 
 
 	glm::vec3 sphereColor(1, 0, 1);
-	sphereColor = hitPoint;
+	// sphereColor = normal / 2.0f + 0.5f;
+	sphereColor *= lightIntensity;
 	return glm::vec4(sphereColor, 1);
 	// return 0xff000000 + (uint32_t)(0xff * coords.y) * 0x100 + (uint32_t)(0xff * coords.x);
 }
