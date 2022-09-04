@@ -53,7 +53,7 @@ uint32_t Renderer::PerPixel(glm::vec2 coords)
 	Equation of a sphere (origin 0,0,0): x^2 + y^2 + z^2 = r^2
 	
 	Plug in the x,y components of ray formula into x y of sphere:
-	(a_x*t + b_x)^2 + (a_y*t + b_y)^2 + (a_z*t + a_z)= r^2
+	(a_x*t + b_x)^2 + (a_y*t + b_y)^2 + (a_z*t + a_z)^2= r^2
 	Solve for t to get the solutions for t
 	The solutions for t give the scaling of t required to hit the sphere
 
@@ -64,14 +64,17 @@ uint32_t Renderer::PerPixel(glm::vec2 coords)
 	descriminant determines if the ray hits the sphere or not
 	descriminant >= 0 ? hit : no hit
 	*/
+
 	glm::vec3 a = {coords.x, coords.y, z};
 	glm::vec3 b = { 0,0,-1.0f};
 	float r = 0.2f;
 
 	float descriminant = glm::dot(a, b) * glm::dot(a, b) - glm::dot(a, a) * (glm::dot(b, b) - r*r);
+	// float scalar = glm::sqrt(descriminant) / dot(a, a)
 
 	if (descriminant >= 0)
-		return 0xffff00ff;
+		return 0xff000000 + (uint32_t)(0xff * ((coords.y)/2 + 0.5)) * 0x100 + (uint32_t)(0xff * (coords.x/2 + 0.5));
+		// return 0xffff00ff;
 	return 0xff000000;
 
 	// return 0xff000000 + (uint32_t)(0xff * coords.y) * 0x100 + (uint32_t)(0xff * coords.x);
