@@ -61,7 +61,6 @@ void Renderer::Render()
 
 glm::vec4 Renderer::PerPixel(glm::vec2 coords)
 {
-	float z = 1.0f;
 	/*
 	Ray Fromula: at + b; where a,b are vectors; t is a scalar;
 	a = ray dirction
@@ -89,23 +88,28 @@ glm::vec4 Renderer::PerPixel(glm::vec2 coords)
 
 	float radius = 0.2f;
 
-	glm::vec3 a = {coords.x, coords.y, z};
-	glm::vec3 b = { 0.0f,0.0f,-1.0f};
+	glm::vec3 rayDirection(coords.x, coords.y, -1.0f);
+	glm::vec3 rayOrigin(0.0f, 0.0f, 2.0f);
 
-	glm::vec3 lightOrigin = { 0.0f,1.0f,0.0f };
+	// prefix quad_ represents parts of the quadratic equation: (-b +/- sqrt(b^2 - 4ac))/(2a)
+	float quad_a = glm::dot(rayDirection, rayDirection);
+	float quad_b = 2.0f * glm::dot(rayDirection, rayOrigin);
+	float quad_c = glm::dot(rayOrigin, rayOrigin) - radius * radius;
 
-	float quad_a = glm::dot(a, a);
-	float quad_b = 2.0f * glm::dot(a, b);
-	float quad_c = glm::dot(b, b) - radius * radius;
-
+	// b^2 - 4ac
 	float discriminant = quad_b * quad_b - 4.0f * quad_a * quad_c;
 	if (discriminant < 0.0f)
 		return glm::vec4(0,0,0,1);
 
-	float t0 = (-quad_b + glm::sqrt(quad_b * quad_b - 4.0f * quad_a * quad_c)) / 2.0f * quad_a;
-	float t1 = (-quad_b - glm::sqrt(quad_b * quad_b - 4.0f * quad_a * quad_c)) / 2.0f * quad_a;
+	// (-b +/- sqrt(discriminant))/2a
+	float t0 = (-quad_b + glm::sqrt(discriminant)) / ( 2.0f * quad_a );
+	float closestT = (-quad_b - glm::sqrt(discriminant)) / ( 2.0f * quad_a );
 
-	return glm::vec4(1,0,1,1);
+	glm::vec3 hitPoint = rayDirection * closestT + rayOrigin;
+
+	glm::vec3 sphereColor(1, 0, 1);
+	sphereColor = hitPoint;
+	return glm::vec4(sphereColor, 1);
 	// return 0xff000000 + (uint32_t)(0xff * coords.y) * 0x100 + (uint32_t)(0xff * coords.x);
 }
 
