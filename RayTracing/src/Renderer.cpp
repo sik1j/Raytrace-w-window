@@ -27,6 +27,7 @@ void Renderer::OnResize(uint32_t width, uint32_t height)
 
 void Renderer::Render()
 {
+	float aspectRatio = (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
 	for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++)
 	{
 		for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++)
@@ -34,7 +35,7 @@ void Renderer::Render()
 			// coord * 2 - 1 sets coord space from: [0,1) to [-1,1)
 			// without this, a sphere at the point 0,0,0 appears at the bottom right of the screen 
 			// instead of the center
-			m_pImageData[y * m_FinalImage->GetWidth() + x] = PerPixel({ ((float)x / m_FinalImage->GetWidth()) * 2 - 1, ((float)y / m_FinalImage->GetHeight()) * 2 - 1 } );
+			m_pImageData[y * m_FinalImage->GetWidth() + x] = PerPixel({ (((float)x / m_FinalImage->GetWidth()) * 2 - 1) * aspectRatio, ((float)y / m_FinalImage->GetHeight()) * 2 - 1  } );
 		}
 	}
 
@@ -71,19 +72,25 @@ uint32_t Renderer::PerPixel(glm::vec2 coords)
 
 	float radius = 0.2f;
 
-
 	glm::vec3 a = {coords.x, coords.y, z};
 	glm::vec3 b = { 0,0,-1.0f};
+
+	glm::vec3 lightOrigin = { -0.5f,1.0f,0 };
 
 	float quad_a = glm::dot(a, a);
 	float quad_b = 2 * glm::dot(a, b);
 	float quad_c = glm::dot(b, b) - radius * radius;
 
 	float discriminant = quad_b * quad_b - 4 * quad_a * quad_c;
+	float scalar = (-quad_b + glm::sqrt(quad_b * quad_b - 4 * quad_a * quad_c)) / 2 * quad_a;
+	glm::vec3 hitCoords = { a.x * scalar + b.x, a.y * scalar + b.y, a.z * scalar + b.z };
+	glm::vec3 vecToLight = lightOrigin - hitCoords;
+	float distanceFromLight = glm::length(vecToLight);
+
 
 	if (discriminant >= 0)
-		return 0xff000000 + (uint32_t)(0xff * ((coords.y)/2 + 0.5)) * 0x100 + (uint32_t)(0xff * (coords.x/2 + 0.5));
-		// return 0xffff00ff;
+		// return 0xff000000 + (uint32_t)(0xff * ((coords.y)/2 + 0.5)) * 0x100 + (uint32_t)(0xff * (coords.x/2 + 0.5));
+		return 0xffffff00 + uint32_t(0xff * (distanceFromLight * 0.7));
 	return 0xff000000;
 
 	// return 0xff000000 + (uint32_t)(0xff * coords.y) * 0x100 + (uint32_t)(0xff * coords.x);
