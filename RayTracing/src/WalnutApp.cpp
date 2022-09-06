@@ -6,6 +6,7 @@
 #include "Walnut/Timer.h"
 
 #include "Renderer.h"
+#include "Sphere.h"
 
 class ExampleLayer : public Walnut::Layer
 {
@@ -14,9 +15,9 @@ public:
 	{
 		ImGui::Begin("Settings");
 		ImGui::Text("Render Time: %.3fms", m_LastRenderTime);
-		ImGui::SliderFloat("sphereX", &m_Renderer.m_sphereX, -1.0f, 1.0f);
-		ImGui::SliderFloat("sphereY", &m_Renderer.m_sphereY, -1.0f, 1.0f);
-		ImGui::SliderFloat("sphereZ", &m_Renderer.m_sphereZ, -1.0f, 1.0f);
+		ImGui::SliderFloat("sphereX", &m_Sphere.x, -1.0f, 1.0f);
+		ImGui::SliderFloat("sphereY", &m_Sphere.y, -1.0f, 1.0f);
+		ImGui::SliderFloat("sphereZ", &m_Sphere.z, -1.0f, 1.0f);
 		if (ImGui::Button("Render"))
 		{
 			Render();
@@ -54,7 +55,8 @@ public:
 	}
 
 private:
-	Renderer m_Renderer;
+	Sphere m_Sphere;
+	Renderer m_Renderer = Renderer(&m_Sphere);
 	uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 
 	float m_LastRenderTime = 0.0f;
