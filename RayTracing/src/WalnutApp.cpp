@@ -14,6 +14,9 @@ public:
 	{
 		ImGui::Begin("Settings");
 		ImGui::Text("Render Time: %.3fms", m_LastRenderTime);
+		ImGui::SliderFloat("sphereX", &m_Renderer.m_sphereX, -1.0f, 1.0f);
+		ImGui::SliderFloat("sphereY", &m_Renderer.m_sphereY, -1.0f, 1.0f);
+		ImGui::SliderFloat("sphereZ", &m_Renderer.m_sphereZ, -1.0f, 1.0f);
 		if (ImGui::Button("Render"))
 		{
 			Render();
@@ -35,6 +38,8 @@ public:
 		ImGui::End();
 
 		ImGui::PopStyleVar();
+
+		Render();
 
 	}
 

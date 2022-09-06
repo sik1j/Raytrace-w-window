@@ -11,6 +11,11 @@ public:
 	void Render();
 	std::shared_ptr<Walnut::Image> GetFinalImage() const { return m_FinalImage; }
 
+public:
+	float m_sphereX = 0.0f;
+	float m_sphereY = 0.0f;
+	float m_sphereZ = 0.0f;
+
 private:
 	glm::vec4 PerPixel(glm::vec2 coords);
 private:
