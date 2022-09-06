@@ -67,20 +67,29 @@ glm::vec4 Renderer::PerPixel(glm::vec2 coords)
 	b = ray origin
 	t = ray size (sorta)
 
-	Equation of a sphere (origin 0,0,0): x^2 + y^2 + z^2 = r^2
+	Equation of a sphere (origin o_x,o_y,o_z): (x-o_x)^2 + (y-o_y)^2 + (z-o_z)^2 = r^2
 	
 	Plug in the x,y components of ray formula into x y of sphere:
-	(a_x*t + b_x)^2 + (a_y*t + b_y)^2 + (a_z*t + a_z)^2= r^2
-	Solve for t to get the solutions for t
-	The solutions for t give the scaling of t required to hit the sphere
+	=>	(a_x*t + b_x - o_x)^2 + (a_y*t + b_y - o_y)^2 + (a_z*t + a_z - o_z)^2 
+		= r^2
+	=>	(a_x^2 + a_y^2 + a_z^2)*t^2 
+		+ 2*(a_x * (b_x - o_x) + a_y * (b_y - o_y) + a_z * (b_z - o_z))*t 
+		+ (b_x - o_x)^2 + (b_y - o_y)^2 + (b_z - o_z)^2 - r^2 
+		= 0 
+	=>	dot(a,a)*t^2 + 2*dot(a,(b - o)) + dot((b - o),(b - o)) - r^2
+		= 0 
+		^dot(u,v) is the dot product of two vectors u, v;
 
-	dot(u,v) -> dot product of vectors u,v
-	solve using quadratic equation
-	t = (-quad_b+/-sqrt(quad_b^2 - 4*quad_a*quad_c))/2quad_a | quad_ prefix used to differentaite from vectors a,b
-	t = (-(dot(a,b))(+/-)sqrt((dot(a,b))^2-(dot(a,a))*(dot(b,b)-r^2)))/dot(a,a)
+	Solve for t using the quadratic formula
+	The solutions for t gives the scalar, (t) required to hit the sphere
 
-	discriminant = quad_b^2-4*quad_a*quad_c
-	discriminant = dot(a,b)^2-dot(a,a)*(dot(b,b)-r^2)
+	quad_a = dot(a,a);
+	quad_b = 2*dot(a,(b - o));
+	quad_c = dot((b-o),(b-o)) - r^2;
+	t = (-quad_b +/- sqrt(quad_b^2 - 4 * quad_a * quad_c))/(2 * quad_a) 
+	^<quad_> prefix used to differentaite variables in the quadratic formula from vectors a,b
+
+	discriminant = quad_b^2 -4 * quad_a * quad_c
 	discriminant determines if the ray hits the sphere or not
 	discriminant >= 0 ? hit : no hit
 	*/
@@ -91,11 +100,12 @@ glm::vec4 Renderer::PerPixel(glm::vec2 coords)
 	// neg z is forward; a computer graphics convention
 	glm::vec3 rayDirection(coords.x, coords.y, -1.0f);
 	glm::vec3 rayOrigin(0.0f, 0.0f, 1.0f);
+	glm::vec3 sphereOrigin(0.0f, 0.0f, 0.0f);
 
 	// prefix quad_ represents parts of the quadratic equation: (-b +/- sqrt(b^2 - 4ac))/(2a)
 	float quad_a = glm::dot(rayDirection, rayDirection);
-	float quad_b = 2.0f * glm::dot(rayDirection, rayOrigin);
-	float quad_c = glm::dot(rayOrigin, rayOrigin) - radius * radius;
+	float quad_b = 2.0f * glm::dot(rayDirection, rayOrigin - sphereOrigin);
+	float quad_c = glm::dot(rayOrigin - sphereOrigin, rayOrigin - sphereOrigin) - radius * radius;
 
 	// b^2 - 4ac
 	float discriminant = quad_b * quad_b - 4.0f * quad_a * quad_c;
