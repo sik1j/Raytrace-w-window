@@ -16,15 +16,9 @@ public:
 		ImGui::Begin("Settings");
 		ImGui::Text("Render Time: %.3fms", m_LastRenderTime);
 
-		glm::vec3* sphereCoords = &m_Sphere.coords;
-		ImGui::SliderFloat("sphereX", &sphereCoords->x, -1.0f, 1.0f);
-		ImGui::SliderFloat("sphereY", &sphereCoords->y, -1.0f, 1.0f);
-		ImGui::SliderFloat("sphereZ", &sphereCoords->z, -1.0f, 1.0f);
+		ImGui::SliderFloat3("SpherePos", m_Sphere.coordsArr, -1.0f, 1.0f);
+		ImGui::SliderFloat3("CameraPos", m_Renderer.m_rayOriginArr, -2.0f, 2.0f);
 
-		glm::vec3* rayOrigin = &m_Renderer.m_RayOrigin;
-		ImGui::SliderFloat("CameraX", &rayOrigin->x, -1.0f, 1.0f);
-		ImGui::SliderFloat("CameraY", &rayOrigin->y, -1.0f, 1.0f);
-		ImGui::SliderFloat("CameraZ", &rayOrigin->z, 0.0f, 2.0f);
 		if (ImGui::Button("Render"))
 		{
 			Render();

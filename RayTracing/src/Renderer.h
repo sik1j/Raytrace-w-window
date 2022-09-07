@@ -16,7 +16,7 @@ public:
 	std::shared_ptr<Walnut::Image> GetFinalImage() const { return m_FinalImage; }
 
 
-	glm::vec3 m_RayOrigin = { 0.0f, 0.0f, 1.0f };
+	float m_rayOriginArr[3] = { 0.0f, 0.0f, 1.0f };
 private:
 	glm::vec4 PerPixel(glm::vec2 coords);
 private:

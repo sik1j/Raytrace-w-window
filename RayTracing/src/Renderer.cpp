@@ -104,9 +104,10 @@ glm::vec4 Renderer::PerPixel(glm::vec2 coords)
 
 	// neg z is forward; a computer graphics convention
 	glm::vec3 rayDirection(coords.x, coords.y, -1.0f);
-	glm::vec3 rayOrigin = m_RayOrigin;
+	glm::vec3 rayOrigin = { m_rayOriginArr[0], m_rayOriginArr[1], m_rayOriginArr[2]};
 
-	glm::vec3 sphereOrigin = pSphere->coords;
+	float* sphereCoords = pSphere->coordsArr;
+	glm::vec3 sphereOrigin = {sphereCoords[0], sphereCoords[1], sphereCoords[2]};
 
 	// prefix quad_ represents parts of the quadratic equation: (-b +/- sqrt(b^2 - 4ac))/(2a)
 	float quad_a = glm::dot(rayDirection, rayDirection);
